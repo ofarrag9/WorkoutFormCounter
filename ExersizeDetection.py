@@ -9,6 +9,9 @@ interpreter.allocate_tensors()
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
+previous_keypoints = None
+bicep_curl_phase = "down"  # Start assuming the arm is down
+
 # Define keypoints for bicep curls and squats
 bicep_curl_keypoints = [5, 7, 9, 11]  # Keypoints for hands, shoulders, and hips
 squat_keypoints = [11, 12, 24]  # Keypoints for hips and knees
@@ -43,12 +46,46 @@ while True:
     interpreter.invoke()
     keypoints = interpreter.get_tensor(output_details[0]['index'])
 
-    # Example: Check for bicep curls and squats
-    def is_bicep_curl(keypoints):
-        return all(np.all(keypoints[keypoint] > 0) for keypoint in bicep_curl_keypoints)
+    # Check for bicep curls and squats
+    def is_bicep_curl(current_keypoints, previous_keypoints):
+        if previous_keypoints is None:
+            return False
 
-    def is_squat(keypoints):
-        return all(np.all(keypoints[keypoint] > 0) for keypoint in squat_keypoints)
+    def is_squat(current_keypoints, previous_keypoints):
+        if previous_keypoints is None:
+            return False
+
+    # Check if the wrist is moving closer to the shoulder
+    current_wrist_pos = current_keypoints[9]
+    previous_wrist_pos = previous_keypoints[9]
+    current_shoulder_pos = current_keypoints[7]
+
+    # Calculate distances
+    current_distance = np.linalg.norm(current_wrist_pos - current_shoulder_pos)
+    previous_distance = np.linalg.norm(previous_wrist_pos - current_shoulder_pos)
+
+    # Determine if the wrist is moving closer or further away
+    if current_distance < previous_distance:
+        return "up"
+    else:
+        return "down"
+
+    # Run pose estimation
+    interpreter.set_tensor(input_details[0]['index'], input_image)
+    interpreter.invoke()
+    keypoints = interpreter.get_tensor(output_details[0]['index'])
+
+    # Check for bicep curl
+    curl_phase = is_bicep_curl(keypoints[0], previous_keypoints)
+    if curl_phase == "up" and bicep_curl_phase == "down":
+        # The bicep curl is starting
+        bicep_curl_phase = "up"
+    elif curl_phase == "down" and bicep_curl_phase == "up":
+        # The bicep curl is completing
+        bicep_curl_phase = "down"
+        repetition_count += 1
+
+    previous_keypoints = keypoints[0]
 
     # Update exercise state
     if current_exercise == EXERCISE_IDLE:
