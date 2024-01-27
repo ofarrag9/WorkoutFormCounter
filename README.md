@@ -5,7 +5,7 @@
 Have you ever been unsure of whether you are doing a workout correctly or not. This summer, I was new to working out, and I was not sure if the form of my workouts were correct or not. That is why I created the Workout Form Counter App, which is a mobile application designed to monitor and enhance your workout sessions through real-time exercise detection and feedback. Leveraging advanced machine learning models with React Native, this app provides a seamless and interactive experience to help you maintain correct form and consistency in your exercises.
 
 ## Demo
-This is how it looks when the app is running and you are working out: [Demo Image](/App/Squat.png) [Demo Video](https://youtube.com/shorts/7zjq3uaAV1k?feature=share)
+This is how it looks when the app is running and you are working out: [Demo Video](https://youtube.com/shorts/7zjq3uaAV1k?feature=share)
 
 ## Features
 - **Real-Time Exercise Detection**: Utilizes your device's camera to detect exercises and monitor your form.
