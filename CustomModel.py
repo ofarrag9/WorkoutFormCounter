@@ -3,10 +3,10 @@ from tensorflow import keras
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 
 # Load and preprocess your dataset of bicep curl images
-# x_train: Training images (numpy array, e.g., 224x224x3 pixels)
-# y_train: Training labels (0 for incorrect, 1 for correct)
+# x_train: Training images (numpy array)
+# y_train: Training labels (0 for Ωct, 1 for correct)
 
-# Define the model
+# Define model
 model = keras.Sequential([
     Conv2D(32, (3, 3), activation='relu', input_shape=(224, 224, 3)),
     MaxPooling2D((2, 2)),
@@ -18,19 +18,19 @@ model = keras.Sequential([
     Dense(1, activation='sigmoid')
 ])
 
-# Compile the model
+# Compile model
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-# Train the model
+# Train model
 model.fit(x_train, y_train, epochs=10, validation_split=0.2)
 
-# Save the trained model
+# Save trained model
 model.save("bicep_curl_model.h5")
 
-# Convert the model to TFLite format
+# Convert model to TFLite format
 converter = tf.lite.TFLiteConverter.from_keras_model(model)
 tflite_model = converter.convert()
 
-# Save the TFLite model
+# Save TFLite model
 with open("bicep_curl_model.tflite", "wb") as f:
     f.write(tflite_model)
