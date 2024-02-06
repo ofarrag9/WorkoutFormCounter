@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 
-# Load and preprocess your dataset of bicep curl images
+# Load and preprocess dataset of bicep curl images
 # x_train: Training images (numpy array)
 # y_train: Training labels (0 for Ωct, 1 for correct)
 
